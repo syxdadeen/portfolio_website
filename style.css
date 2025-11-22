@@ -263,6 +263,59 @@ a {
     padding: 1.5rem;
 }
 
+/* Reviews */
+.review-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.star-rating {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.star {
+    color: #444;
+    transition: color 0.2s;
+    font-style: normal;
+}
+
+.star.active,
+.star:hover,
+.star:hover~.star {
+    color: #ffd700;
+    /* Gold */
+}
+
+/* Hover effect logic: highlight all stars up to the hovered one */
+.star-rating:hover .star {
+    color: #444;
+}
+
+.star-rating .star:hover,
+.star-rating .star:hover~.star {
+    color: #ffd700;
+}
+
+/* When not hovering container, keep active stars gold */
+.star-rating:not(:hover) .star.active {
+    color: #ffd700;
+}
+
 /* Contact */
 .contact-form {
     max-width: 600px;
@@ -310,10 +363,6 @@ textarea:focus {
 
 /* Responsive */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 2.5rem;
-    }
-
     h1 {
         font-size: 2.5rem;
     }
