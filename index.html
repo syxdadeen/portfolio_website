@@ -26,6 +26,7 @@
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#projects">Projects</a></li>
+            <li><a href="#reviews">Reviews</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
     </nav>
@@ -74,6 +75,40 @@
                         <p>Connecting people with shared interests.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews" class="section">
+        <div class="container">
+            <h2 class="section-title fade-in">Leave a Review</h2>
+            <div class="review-container fade-in">
+                <form id="review-form" action="https://api.web3forms.com/submit" method="POST" class="review-form">
+                    <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rating</label>
+                        <div class="star-rating">
+                            <i class="star" data-value="1">★</i>
+                            <i class="star" data-value="2">★</i>
+                            <i class="star" data-value="3">★</i>
+                            <i class="star" data-value="4">★</i>
+                            <i class="star" data-value="5">★</i>
+                        </div>
+                        <input type="hidden" name="rating" id="rating-value" required>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your Review" rows="4" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">Submit Review</button>
+                    <p id="form-message"></p>
+                </form>
             </div>
         </div>
     </section>
