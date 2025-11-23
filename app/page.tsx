@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import emailjs from "@emailjs/browser";
+import WaterEffect from "./components/WaterEffect";
 
 export default function Home() {
   // State for mobile menu
@@ -226,6 +227,7 @@ export default function Home() {
       </nav>
 
       <section id="home" className="hero">
+        <WaterEffect />
         <div className="hero-content">
           <h1 className="fade-in">
             Building the Future of <br />
