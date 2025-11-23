@@ -2,83 +2,147 @@
 
 import { useEffect, useRef } from "react";
 
-export default function WaterEffect() {
+export default function WaterRippleEffect() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
         if (!ctx) return;
 
-        let animationFrameId: number;
-        let time = 0;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Water simulation variables
+        const resolution = 3; // Lower = higher quality but slower
+        const cols = Math.floor(width / resolution);
+        const rows = Math.floor(height / resolution);
+
+        let current = new Array(cols).fill(0).map(() => new Array(rows).fill(0));
+        let previous = new Array(cols).fill(0).map(() => new Array(rows).fill(0));
+
+        const dampening = 0.99;
 
         const resize = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
         };
 
-        resize();
         window.addEventListener("resize", resize);
 
-        const drawWave = (
-            yOffset: number,
-            amplitude: number,
-            frequency: number,
-            phase: number,
-            opacity: number,
-            color: string
-        ) => {
-            ctx.beginPath();
-            ctx.moveTo(0, canvas.height);
+        // Mouse interaction
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = Math.floor(e.clientX / resolution);
+            const y = Math.floor(e.clientY / resolution);
 
-            for (let x = 0; x <= canvas.width; x += 5) {
-                const y =
-                    yOffset +
-                    Math.sin((x * frequency + phase) / 100) * amplitude +
-                    Math.sin((x * frequency * 0.5 + phase * 1.3) / 150) * (amplitude * 0.5);
+            if (x > 0 && x < cols - 1 && y > 0 && y < rows - 1) {
+                // Create ripple at mouse position
+                for (let i = -2; i <= 2; i++) {
+                    for (let j = -2; j <= 2; j++) {
+                        const nx = x + i;
+                        const ny = y + j;
+                        if (nx > 0 && nx < cols - 1 && ny > 0 && ny < rows - 1) {
+                            previous[nx][ny] = 255;
+                        }
+                    }
+                }
+            }
+        };
 
-                if (x === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
+        const handleClick = (e: MouseEvent) => {
+            const x = Math.floor(e.clientX / resolution);
+            const y = Math.floor(e.clientY / resolution);
+
+            if (x > 0 && x < cols - 1 && y > 0 && y < rows - 1) {
+                // Create bigger ripple on click
+                for (let i = -5; i <= 5; i++) {
+                    for (let j = -5; j <= 5; j++) {
+                        const nx = x + i;
+                        const ny = y + j;
+                        if (nx > 0 && nx < cols - 1 && ny > 0 && ny < rows - 1) {
+                            previous[nx][ny] = 512;
+                        }
+                    }
+                }
+            }
+        };
+
+        canvas.addEventListener("mousemove", handleMouseMove);
+        canvas.addEventListener("click", handleClick);
+
+        const animate = () => {
+            // Update water simulation
+            for (let x = 1; x < cols - 1; x++) {
+                for (let y = 1; y < rows - 1; y++) {
+                    current[x][y] =
+                        (previous[x - 1][y] +
+                            previous[x + 1][y] +
+                            previous[x][y - 1] +
+                            previous[x][y + 1]) /
+                        2 -
+                        current[x][y];
+                    current[x][y] *= dampening;
                 }
             }
 
-            ctx.lineTo(canvas.width, canvas.height);
-            ctx.lineTo(0, canvas.height);
-            ctx.closePath();
+            // Render
+            ctx.fillStyle = "#050505";
+            ctx.fillRect(0, 0, width, height);
 
-            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, `${color}00`);
-            gradient.addColorStop(0.5, `${color}${Math.floor(opacity * 255).toString(16).padStart(2, '0')}`);
-            gradient.addColorStop(1, `${color}${Math.floor(opacity * 0.3 * 255).toString(16).padStart(2, '0')}`);
+            const imageData = ctx.createImageData(width, height);
 
-            ctx.fillStyle = gradient;
-            ctx.fill();
-        };
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    const value = current[x][y];
 
-        const animate = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    // Map water height to color
+                    const intensity = Math.min(Math.abs(value), 255);
 
-            time += 0.005;
+                    // Purple/violet gradient based on ripple intensity
+                    const r = Math.floor(99 + intensity * 0.3);
+                    const g = Math.floor(102 + intensity * 0.2);
+                    const b = Math.floor(241 + intensity * 0.05);
+                    const a = Math.floor(intensity * 0.4);
 
-            // Multiple layers of waves for depth
-            drawWave(canvas.height * 0.7, 60, 0.8, time * 50, 0.15, "#7c3aed");
-            drawWave(canvas.height * 0.75, 50, 1, time * 40, 0.12, "#6366f1");
-            drawWave(canvas.height * 0.8, 40, 1.2, time * 30, 0.1, "#8b5cf6");
-            drawWave(canvas.height * 0.85, 35, 0.9, time * 35, 0.08, "#a78bfa");
+                    // Fill pixels
+                    for (let i = 0; i < resolution; i++) {
+                        for (let j = 0; j < resolution; j++) {
+                            const pixelX = x * resolution + i;
+                            const pixelY = y * resolution + j;
 
-            animationFrameId = requestAnimationFrame(animate);
+                            if (pixelX < width && pixelY < height) {
+                                const index = (pixelY * width + pixelX) * 4;
+                                imageData.data[index] = r;
+                                imageData.data[index + 1] = g;
+                                imageData.data[index + 2] = b;
+                                imageData.data[index + 3] = a;
+                            }
+                        }
+                    }
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+
+            // Swap buffers
+            [current, previous] = [previous, current];
+
+            requestAnimationFrame(animate);
         };
 
         animate();
 
         return () => {
             window.removeEventListener("resize", resize);
-            cancelAnimationFrame(animationFrameId);
+            canvas.removeEventListener("mousemove", handleMouseMove);
+            canvas.removeEventListener("click", handleClick);
         };
     }, []);
 
@@ -91,7 +155,6 @@ export default function WaterEffect() {
                 left: 0,
                 width: "100%",
                 height: "100%",
-                pointerEvents: "none",
                 zIndex: 0,
             }}
         />
