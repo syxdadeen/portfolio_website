@@ -243,12 +243,12 @@ export default function Home() {
 
       <section id="about" className="section">
         <div className="container">
-          <h2 className="section-title fade-in">About Me</h2>
-          <div className="about-content fade-in">
-            <p>
-              I am a passionate developer with a keen eye for design. I
-              specialize in building modern web applications that not only work
-              perfectly but look amazing.
+          <h2 className="fade-in">About Me</h2>
+          <div className="fade-in" style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
+            <p style={{ fontSize: "1.25rem", lineHeight: "1.8" }}>
+              I'm a passionate developer specializing in building modern web applications
+              that combine cutting-edge technology with exceptional design. My work focuses
+              on creating seamless digital experiences that drive results.
             </p>
           </div>
         </div>
@@ -256,7 +256,7 @@ export default function Home() {
 
       <section id="projects" className="section">
         <div className="container">
-          <h2 className="section-title fade-in">Selected Work</h2>
+          <h2 className="fade-in">Featured Projects</h2>
           <div className="project-grid">
             <ProjectCard
               title="E-Commerce Platform"
@@ -276,9 +276,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="reviews" className="section">
+      <section id="reviews" className="section" style={{ background: "rgba(255,255,255,0.01)" }}>
         <div className="container">
-          <h2 className="section-title fade-in">Leave a Review</h2>
+          <h2 className="fade-in">Client Reviews</h2>
+          <p className="fade-in" style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 3rem", color: "var(--text-secondary)" }}>
+            Share your experience working with me
+          </p>
           <div className="review-container fade-in">
             <form ref={form} onSubmit={sendEmail} className="review-form">
               <div className="form-group">
@@ -338,7 +341,10 @@ export default function Home() {
 
       <section id="contact" className="section">
         <div className="container">
-          <h2 className="section-title fade-in">Get in Touch</h2>
+          <h2 className="fade-in">Let's Work Together</h2>
+          <p className="fade-in" style={{ textAlign: "center", maxWidth: "600px", margin: "0 auto 3rem", color: "var(--text-secondary)" }}>
+            Have a project in mind? Let's discuss how we can bring your vision to life.
+          </p>
           <form className="contact-form fade-in" onSubmit={handleContactSubmit}>
             <input type="text" name="name" placeholder="Name" required />
             <input type="email" name="email" placeholder="Email" required />
@@ -350,8 +356,15 @@ export default function Home() {
         </div>
       </section>
 
-      <footer>
-        <p>&copy; 2024 Adeen. All rights reserved.</p>
+      <footer style={{
+        borderTop: "1px solid var(--card-border)",
+        padding: "3rem 0",
+        textAlign: "center",
+        marginTop: "4rem"
+      }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>
+          &copy; 2024 Adeen. All rights reserved.
+        </p>
       </footer>
     </main>
   );
