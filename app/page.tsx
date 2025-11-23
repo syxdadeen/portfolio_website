@@ -228,14 +228,15 @@ export default function Home() {
       <section id="home" className="hero">
         <div className="hero-content">
           <h1 className="fade-in">
-            Building Digital <span className="typing-text">{text}</span>
+            Building the Future of <br />
+            <span className="typing-text">{text}</span>
             <span className="cursor-blink">|</span>
           </h1>
-          <p className="fade-in delay-1">
-            I craft visually stunning and performant websites.
+          <p className="fade-in delay-1" style={{ maxWidth: "600px", margin: "0 auto 2rem" }}>
+            I craft high-performance digital experiences that merge art with engineering.
           </p>
           <a href="#projects" className="btn fade-in delay-2">
-            View Work
+            Explore Work
           </a>
         </div>
       </section>
